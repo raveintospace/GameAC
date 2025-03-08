@@ -6,19 +6,39 @@
 //
 
 import SwiftUI
+import SpriteKit
+
+enum GameState {
+    case game, menu
+}
 
 struct ContentView: View {
+    
+    @State private var state: GameState = .menu
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        menu
     }
 }
 
 #Preview {
     ContentView()
+}
+
+extension ContentView {
+    
+    private var menu: some View {
+        ZStack {
+            Image(.bkgd0)
+            Button {
+                
+            } label: {
+                Text("Start")
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
+            .controlSize(.large)
+        }
+        .ignoresSafeArea()
+    }
 }
