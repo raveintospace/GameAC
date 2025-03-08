@@ -30,6 +30,7 @@ extension ContentView {
     private var menu: some View {
         ZStack {
             Image(.bkgd0)
+                .resizable()
             Button {
                 
             } label: {
@@ -40,5 +41,6 @@ extension ContentView {
             .controlSize(.large)
         }
         .ignoresSafeArea()
+        .scaledToFill()
     }
 }
