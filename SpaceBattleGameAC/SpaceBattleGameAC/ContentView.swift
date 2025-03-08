@@ -17,7 +17,10 @@ struct ContentView: View {
     @State private var state: GameState = .menu
     
     var body: some View {
-        menu
+        ZStack {
+            menu
+        }
+        .statusBarHidden()
     }
 }
 
