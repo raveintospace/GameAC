@@ -173,6 +173,25 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         ship.position.x += deltaX * acceleration
         ship.position.y += deltaY * acceleration
     }
+    
+    // collision logic
+    func didBegin(_ contact: SKPhysicsContact) {
+        let bodyA = contact.bodyA
+        let bodyB = contact.bodyB
+        
+        if bodyA.categoryBitMask == PhysicsCategory.laser &&
+            bodyB.categoryBitMask == PhysicsCategory.enemy {
+            // laser has contacted enemy
+            bodyA.node?.removeFromParent()
+            bodyB.node?.removeFromParent()
+            
+        } else if bodyB.categoryBitMask == PhysicsCategory.ship &&
+                    bodyA.categoryBitMask == PhysicsCategory.enemy {
+            // enemy has contacted ship
+            bodyA.node?.removeFromParent()
+            bodyB.node?.removeFromParent()
+        }
+    }
 }
 
 // Allow to increment a CGSize using a CGFloat value
