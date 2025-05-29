@@ -11,6 +11,7 @@ import GameplayKit
 
 final class GameScene: SKScene {
     let type = GKRandomDistribution(forDieWithSideCount: 2) // used to create the enemies
+    var timerEnemies: Timer?
     
     // Constructor for our game
     static let newGame: GameScene = {
@@ -22,6 +23,11 @@ final class GameScene: SKScene {
     // initialize our game components
     override func didMove(to view: SKView) {
         setupShip()
+        
+        timerEnemies = Timer.scheduledTimer(withTimeInterval: .random(in: 2...4),
+                                            repeats: true) { _ in
+            self.spawnEnemy()
+        }
     }
     
     // constraints on screen for ship
