@@ -54,8 +54,30 @@ final class GameScene: SKScene {
         laser.run(sequence)
     }
     
+    // executed with every new frame
+    override func update(_ currentTime: TimeInterval) {
+        moveScroll(layer: 0, scrollSpeed: 50)
+        moveScroll(layer: 1, scrollSpeed: 70)
+        moveScroll(layer: 2, scrollSpeed: 100)
+    }
+    
+    // move background to create a scroll effect
     func moveScroll(layer: Int, scrollSpeed: CGFloat) {
+        guard let scroll1 = childNode(withName: "background\(layer)1") as? SKSpriteNode,
+              let scroll2 = childNode(withName: "background\(layer)2") as? SKSpriteNode else { return }
         
+        let deltaTime = 1 / 60.0  // calculate scroll speed, based on 60fps
+        scroll1.position.y -= scrollSpeed * CGFloat(deltaTime)
+        scroll2.position.y -= scrollSpeed * CGFloat(deltaTime)
+        
+        // detect when background1 has disappeared from screen and move it back to top
+        if scroll1.position.y <= -scroll1.size.height {
+            scroll1.position.y = scroll2.position.y + scroll2.size.height
+        }
+        
+        if scroll2.position.y <= -scroll2.size.height {
+            scroll2.position.y = scroll1.position.y + scroll1.size.height
+        }
     }
     
     // player's attack
@@ -67,7 +89,7 @@ final class GameScene: SKScene {
     // move the ship based on user's touch
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first,
-        let ship = childNode(withName: "ship") as? SKSpriteNode else { return } // ship position
+              let ship = childNode(withName: "ship") as? SKSpriteNode else { return } // ship position
         
         let currentPosition = touch.location(in: self)
         let previousPosition = touch.previousLocation(in: self)
