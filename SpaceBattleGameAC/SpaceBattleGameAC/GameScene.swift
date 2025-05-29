@@ -33,10 +33,28 @@ final class GameScene: SKScene {
         ship.constraints = [constraint]
     }
     
+    // player's weapon
+    func fireLaser() {
+        guard let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
+        
+        let laser = SKShapeNode(rectOf: CGSize(width: 3, height: 30))
+        laser.fillColor = .yellow
+        laser.strokeColor = .clear
+        laser.blendMode = .add
+        laser.zPosition = 4
+        
+        laser.position = CGPoint(x: ship.position.x, y: ship.position.y)
+        
+        addChild(laser)
+    }
+    
+    // player's attack
+    
+    
     // move the ship based on user's touch
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first,
-        let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
+        let ship = childNode(withName: "ship") as? SKSpriteNode else { return } // ship position
         
         let currentPosition = touch.location(in: self)
         let previousPosition = touch.previousLocation(in: self)
@@ -44,7 +62,7 @@ final class GameScene: SKScene {
         let deltaX = currentPosition.x - previousPosition.x
         let deltaY = currentPosition.y - previousPosition.y
         
-        let acceleration: CGFloat = 2.0
+        let acceleration: CGFloat = 1.5
         
         ship.position.x += deltaX * acceleration
         ship.position.y += deltaY * acceleration
