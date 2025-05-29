@@ -19,7 +19,18 @@ final class GameScene: SKScene {
     
     // initialize our game components
     override func didMove(to view: SKView) {
-        //
+        setupShip()
+    }
+    
+    // constraints on screen for ship
+    func setupShip() {
+        guard let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
+        let xRange = SKRange(lowerLimit: -((frame.width / 2) - ship.frame.width),
+                             upperLimit: (frame.width / 2) - ship.frame.width)
+        let yRange = SKRange(lowerLimit: -(frame.height / 2) + 100,
+                             upperLimit: frame.width / 4)
+        let constraint = SKConstraint.positionX(xRange, y: yRange)
+        ship.constraints = [constraint]
     }
     
     // move the ship based on user's touch
