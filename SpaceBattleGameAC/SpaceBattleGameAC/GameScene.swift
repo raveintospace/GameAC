@@ -28,6 +28,11 @@ final class GameScene: SKScene {
                                             repeats: true) { _ in
             self.spawnEnemy()
         }
+        
+        // avoid enemy's layer being affected by background's scroll
+        let enemyLayer = SKNode()
+        enemyLayer.name = "enemyLayer"
+        addChild(enemyLayer)
     }
     
     // constraints on screen for ship
@@ -90,7 +95,8 @@ final class GameScene: SKScene {
     
     // invoke an enemy
     func spawnEnemy() {
-        guard let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
+        guard let enemyLayer = childNode(withName: "enemyLayer"),
+              let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
         
         let enemyType = type.nextInt()
         let enemy = SKSpriteNode(imageNamed: "enemy\(enemyType)")
@@ -99,12 +105,12 @@ final class GameScene: SKScene {
         enemy.position = CGPoint(x: .random(in: -frame.width / 2 ... frame.width / 2),
                                  y: frame.height / 2 + 50)
         
-        addChild(enemy)
+        enemyLayer.addChild(enemy)
         
         // enemy's movement, like an S
-        let amplitude: CGFloat = 100
-        let frequency: CGFloat = 2
-        let duration: TimeInterval = 4.0
+        let amplitude: CGFloat = .random(in: 75...125)
+        let frequency: CGFloat = .random(in: 2...3)
+        let duration: TimeInterval = .random(in: 3...6)
         
         let path = CGMutablePath()
         let startX = enemy.position.x
@@ -113,7 +119,7 @@ final class GameScene: SKScene {
         
         for i in 0..<Int(frequency * 100) {
             let x = startX + amplitude * sin(CGFloat(i) * .pi / 50)
-            let y = startY + CGFloat(i) * ((frame.height + (enemy.size.height * 2)) / (frequency * 100))
+            let y = startY - CGFloat(i) * ((frame.height + (enemy.size.height * 2)) / (frequency * 100))
             path.addLine(to: CGPoint(x: x, y: y))
         }
         
@@ -121,7 +127,7 @@ final class GameScene: SKScene {
         let remove = SKAction.removeFromParent()
         let sequence = SKAction.sequence([waveAction, remove])
         
-        enemy.run(waveAction)
+        enemy.run(sequence)
     }
     
     // player's attack
