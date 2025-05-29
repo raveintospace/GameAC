@@ -9,7 +9,7 @@ import SwiftUI
 import SpriteKit
 import GameplayKit
 
-final class GameScene: SKScene {
+final class GameScene: SKScene, SKPhysicsContactDelegate {
     let type = GKRandomDistribution(forDieWithSideCount: 2) // used to create the enemies
     var timerEnemies: Timer?
     
@@ -22,6 +22,9 @@ final class GameScene: SKScene {
     
     // initialize our game components
     override func didMove(to view: SKView) {
+        physicsWorld.contactDelegate = self
+        physicsWorld.gravity = .zero
+        
         setupShip()
         
         timerEnemies = Timer.scheduledTimer(withTimeInterval: .random(in: 2...4),
@@ -163,4 +166,12 @@ extension CGSize {
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
         CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
     }
+}
+
+// physics category for each screen element
+struct PhysicsCategory {
+    static let none: UInt32 = 0
+    static let laser: UInt32 = 0b1 // 1
+    static let enemy: UInt32 = 0b10 // 2
+    static let ship: UInt32 = 0b100 // 4
 }
