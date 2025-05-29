@@ -7,8 +7,10 @@
 
 import SwiftUI
 import SpriteKit
+import GameplayKit
 
 final class GameScene: SKScene {
+    let type = GKRandomDistribution(forDieWithSideCount: 2) // used to create the enemies
     
     // Constructor for our game
     static let newGame: GameScene = {
@@ -38,7 +40,7 @@ final class GameScene: SKScene {
         guard let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
         
         let laser = SKShapeNode(rectOf: CGSize(width: 3, height: 30))
-        laser.fillColor = .yellow
+        laser.fillColor = .green
         laser.strokeColor = .clear
         laser.blendMode = .add
         laser.zPosition = 4
@@ -80,6 +82,42 @@ final class GameScene: SKScene {
         }
     }
     
+    // invoke an enemy
+    func spawnEnemy() {
+        guard let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
+        
+        let enemyType = type.nextInt()
+        let enemy = SKSpriteNode(imageNamed: "enemy\(enemyType)")
+        enemy.size = ship.size * CGFloat.random(in: 0.5...0.8)
+        enemy.zPosition = ship.zPosition
+        enemy.position = CGPoint(x: .random(in: -frame.width / 2 ... frame.width / 2),
+                                 y: frame.height / 2 + 50)
+        
+        addChild(enemy)
+        
+        // enemy's movement, like an S
+        let amplitude: CGFloat = 100
+        let frequency: CGFloat = 2
+        let duration: TimeInterval = 4.0
+        
+        let path = CGMutablePath()
+        let startX = enemy.position.x
+        let startY = enemy.position.y
+        path.move(to: CGPoint(x: startX, y: startY))
+        
+        for i in 0..<Int(frequency * 100) {
+            let x = startX + amplitude * sin(CGFloat(i) * .pi / 50)
+            let y = startY + CGFloat(i) * ((frame.height + (enemy.size.height * 2)) / (frequency * 100))
+            path.addLine(to: CGPoint(x: x, y: y))
+        }
+        
+        let waveAction = SKAction.follow(path, asOffset: false, orientToPath: false, speed: duration)
+        let remove = SKAction.removeFromParent()
+        let sequence = SKAction.sequence([waveAction, remove])
+        
+        enemy.run(waveAction)
+    }
+    
     // player's attack
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let _ = touches.first else { return } // check if the screen has been touched
@@ -101,5 +139,16 @@ final class GameScene: SKScene {
         
         ship.position.x += deltaX * acceleration
         ship.position.y += deltaY * acceleration
+    }
+}
+
+// Allow to increment a CGSize using a CGFloat value
+extension CGSize {
+    static func *= (lhs: inout CGSize, rhs: CGFloat) {
+        lhs = CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
+    }
+    
+    static func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
+        CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
     }
 }
