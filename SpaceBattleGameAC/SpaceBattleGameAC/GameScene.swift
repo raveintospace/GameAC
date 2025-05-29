@@ -46,10 +46,19 @@ final class GameScene: SKScene {
         laser.position = CGPoint(x: ship.position.x, y: ship.position.y)
         
         addChild(laser)
+        
+        let moveAction = SKAction.moveTo(y: frame.height + laser.frame.height, duration: 2)
+        let remove = SKAction.removeFromParent()
+        let sequence = SKAction.sequence([moveAction, remove])
+        
+        laser.run(sequence)
     }
     
     // player's attack
-    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let _ = touches.first else { return } // check if the screen has been touched
+        fireLaser()
+    }
     
     // move the ship based on user's touch
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
