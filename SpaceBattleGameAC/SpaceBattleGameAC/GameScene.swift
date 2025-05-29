@@ -10,7 +10,7 @@ import SpriteKit
 import GameplayKit
 
 final class GameScene: SKScene, SKPhysicsContactDelegate {
-    let type = GKRandomDistribution(forDieWithSideCount: 2) // used to create the enemies
+    let type = GKRandomDistribution(forDieWithSideCount: 2) // used to randomly create the enemies
     var timerEnemies: Timer?
     
     // Constructor for our game
@@ -144,9 +144,8 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
             path.addLine(to: CGPoint(x: x, y: y))
         }
         
-        let waveAction = SKAction.follow(path, asOffset: false, orientToPath: false, speed: duration)
-        let remove = SKAction.removeFromParent()
-        let sequence = SKAction.sequence([waveAction, remove])
+        let waveAction = SKAction.follow(path, asOffset: false, orientToPath: false, duration: duration)
+        let sequence = SKAction.sequence([waveAction, .removeFromParent()])
         
         enemy.run(sequence)
     }
@@ -184,9 +183,10 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
             // laser has contacted enemy
             bodyA.node?.removeFromParent()
             bodyB.node?.removeFromParent()
-            
-        } else if bodyB.categoryBitMask == PhysicsCategory.ship &&
-                    bodyA.categoryBitMask == PhysicsCategory.enemy {
+        }
+        
+        if bodyA.categoryBitMask == PhysicsCategory.ship &&
+            bodyB.categoryBitMask == PhysicsCategory.enemy {
             // enemy has contacted ship
             bodyA.node?.removeFromParent()
             bodyB.node?.removeFromParent()
