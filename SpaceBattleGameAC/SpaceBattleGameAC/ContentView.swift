@@ -18,9 +18,15 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            menu
+            switch state {
+            case .game:
+                SpriteView(scene: GameScene.newGame)
+            case .menu:
+                menu
+            }
         }
         .statusBarHidden()
+        .ignoresSafeArea()
     }
 }
 
@@ -35,7 +41,7 @@ extension ContentView {
             Image(.bkgd0)
                 .resizable()
             Button {
-                
+                state = .game
             } label: {
                 Text("Start")
             }
@@ -43,7 +49,5 @@ extension ContentView {
             .buttonBorderShape(.capsule)
             .controlSize(.large)
         }
-        .ignoresSafeArea()
-        .scaledToFill()
     }
 }
