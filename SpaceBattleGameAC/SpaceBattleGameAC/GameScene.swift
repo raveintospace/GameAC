@@ -19,15 +19,23 @@ final class GameScene: SKScene {
     
     // initialize our game components
     override func didMove(to view: SKView) {
-        <#code#>
+        //
     }
     
-    // move the ship
+    // move the ship based on user's touch
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first,
         let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
         
         let currentPosition = touch.location(in: self)
-        ship.position = currentPosition
+        let previousPosition = touch.previousLocation(in: self)
+        
+        let deltaX = currentPosition.x - previousPosition.x
+        let deltaY = currentPosition.y - previousPosition.y
+        
+        let acceleration: CGFloat = 2.0
+        
+        ship.position.x += deltaX * acceleration
+        ship.position.y += deltaY * acceleration
     }
 }
