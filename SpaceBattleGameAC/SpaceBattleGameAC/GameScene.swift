@@ -47,6 +47,12 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
                              upperLimit: frame.width / 4)
         let constraint = SKConstraint.positionX(xRange, y: yRange)
         ship.constraints = [constraint]
+    
+        ship.physicsBody = SKPhysicsBody(circleOfRadius: ship.size.width / 2)
+        ship.physicsBody?.isDynamic = true      // circle follows ship's movement
+        ship.physicsBody?.categoryBitMask = PhysicsCategory.ship
+        ship.physicsBody?.collisionBitMask = PhysicsCategory.none
+        ship.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
     }
     
     // player's weapon
@@ -62,6 +68,12 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
         laser.position = CGPoint(x: ship.position.x, y: ship.position.y)
         
         addChild(laser)
+        
+        laser.physicsBody = SKPhysicsBody(rectangleOf: laser.frame.size)
+        laser.physicsBody?.isDynamic = true
+        laser.physicsBody?.categoryBitMask = PhysicsCategory.laser
+        laser.physicsBody?.collisionBitMask = PhysicsCategory.none
+        laser.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
         
         let moveAction = SKAction.moveTo(y: frame.height + laser.frame.height, duration: 2)
         let remove = SKAction.removeFromParent()
@@ -109,6 +121,12 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
                                  y: frame.height / 2 + 50)
         
         enemyLayer.addChild(enemy)
+        
+        enemy.physicsBody = SKPhysicsBody(circleOfRadius: enemy.size.width / 2)
+        enemy.physicsBody?.isDynamic = true
+        enemy.physicsBody?.categoryBitMask = PhysicsCategory.enemy
+        enemy.physicsBody?.collisionBitMask = PhysicsCategory.none
+        enemy.physicsBody?.contactTestBitMask = PhysicsCategory.laser | PhysicsCategory.ship
         
         // enemy's movement, like an S
         let amplitude: CGFloat = .random(in: 75...125)
