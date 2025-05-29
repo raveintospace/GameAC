@@ -25,6 +25,7 @@ struct ContentView: View {
                 menu
             }
         }
+        .animation(.default, value: state)
         .statusBarHidden()
         .ignoresSafeArea()
     }

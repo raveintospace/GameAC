@@ -16,4 +16,18 @@ final class GameScene: SKScene {
         game.scaleMode = .aspectFill
         return game
     }()
+    
+    // initialize our game components
+    override func didMove(to view: SKView) {
+        <#code#>
+    }
+    
+    // move the ship
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first,
+        let ship = childNode(withName: "ship") as? SKSpriteNode else { return }
+        
+        let currentPosition = touch.location(in: self)
+        ship.position = currentPosition
+    }
 }
