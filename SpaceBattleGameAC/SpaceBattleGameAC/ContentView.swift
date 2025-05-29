@@ -14,6 +14,7 @@ enum GameState {
 
 struct ContentView: View {
     
+    private let gameOver = NotificationCenter.default.publisher(for: .gameover)
     @State private var state: GameState = .menu
     
     var body: some View {
@@ -23,6 +24,12 @@ struct ContentView: View {
                 SpriteView(scene: GameScene.newGame)
             case .menu:
                 menu
+            }
+        }
+        .onReceive(gameOver) { _ in
+            Task {
+                try await Task.sleep(for: .seconds(2))
+                state = .menu
             }
         }
         .animation(.default, value: state)

@@ -190,6 +190,7 @@ final class GameScene: SKScene, SKPhysicsContactDelegate {
             // enemy has contacted ship
             bodyA.node?.removeFromParent()
             bodyB.node?.removeFromParent()
+            NotificationCenter.default.post(name: .gameover, object: nil)
         }
     }
 }
@@ -203,6 +204,10 @@ extension CGSize {
     static func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
         CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
     }
+}
+
+extension Notification.Name {
+    static let gameover = Notification.Name("GAMEOVER")
 }
 
 // physics category for each screen element
