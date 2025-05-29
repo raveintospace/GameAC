@@ -54,6 +54,10 @@ final class GameScene: SKScene {
         laser.run(sequence)
     }
     
+    func moveScroll(layer: Int, scrollSpeed: CGFloat) {
+        
+    }
+    
     // player's attack
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let _ = touches.first else { return } // check if the screen has been touched
